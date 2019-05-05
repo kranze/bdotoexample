@@ -23,12 +23,12 @@ class ChargeControl(threading.Thread):
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message 
         self.client.connect("localhost", 1883, 60)
-        self.client.publish("port0/cp/duty_cycle", 100, retain=True)
+        self.client.publish("port0/cp/duty_cycle", 0, retain=True)
 
         self.clientex=mqtt.Client()
         self.clientex.on_connect = self.on_connectex
         self.clientex.on_message = self.on_messageex
-        self.clientex.connect("solarbuntumiv", 1883, 60)
+        self.clientex.connect("solarbuntumiv", 1883, 60) #IP address EVAcharge
         self.clientex.loop_start()
         
         self.alive=True
@@ -117,16 +117,12 @@ class ChargeControl(threading.Thread):
 
         if ( value >= 8 and value < 10 ):
             return( 6 )
-            
         elif ( value >= 10 and value < 85 ):
             return( int( value * 0.6 ) )
-            
         elif ( value >= 86 and value < 96 ):
             return( int( ( value - 64 ) * 2.5 ) )
-            
         elif ( value == 97 ):
             return( 80 )
-            
         else:
             return ( 0 )
     
@@ -134,13 +130,10 @@ class ChargeControl(threading.Thread):
 
         if ( value >= 6 and value < 52 ):
             return( int( value / 0.6 )  )
-            
         elif ( value >= 52 and value < 80 ):
             return( int( value / 2.5 ) + 64 )
-            
         elif ( value >= 80 ):
             return( 97 )
-            
         else:
             return ( 0 )
                       
@@ -157,13 +150,12 @@ class ChargeControl(threading.Thread):
         
         self.client.publish("port0/contactor/state/target", value, retain=True)
 
-    
         
     def run(self):
 
         cpstate_old=''
         max_cable_current_old=0
-        pwm=100
+        pwm=0
 
         while self.alive:
             time.sleep(0.1)
