@@ -4,14 +4,11 @@ import paho.mqtt.client as mqtt
 import time, threading
 import logging, sys
 
-
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-
 TOPIC_PP_STATE = "port0/pp/state"
 TOPIC_CP_DUTY_CYCLE = "port0/cp/duty_cycle"
-
 
 class ChargeControl(threading.Thread):
 
@@ -19,9 +16,6 @@ class ChargeControl(threading.Thread):
         threading.Thread.__init__(self)
 
         #logging stuff
-
-#        self.logger=logging.getLogger()
-#        self.logger.setLevel(logging.INFO)
         logger.setLevel(logging.DEBUG)        
         logger.info("logger init complete")
 
