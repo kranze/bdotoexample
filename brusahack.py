@@ -2,7 +2,7 @@
 
 import paho.mqtt.client as mqtt
 import time, threading
-import logging, sys
+import logging, sys, gpio
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -150,6 +150,10 @@ class ChargeControl(threading.Thread):
         
         self.client.publish("port0/contactor/state/target", value, retain=True)
 
+    def wake_up_line(self):
+        gpio.set(85, 1)
+        time.sleep(1)
+        gpio.set(85,0)
         
     def run(self):
 
@@ -162,6 +166,8 @@ class ChargeControl(threading.Thread):
             if( max_cable_current_old != self.max_cable_current ):
                 if ( self.max_cable_current > 0 ):
                     self.pp_for_brusa( 1 )
+                    wkupth=threading.Thread(target=self.wake_up_line)
+                    wkupth.start()
                 else:
                     self.pp_for_brusa( 0 )
                 max_cable_current_old = self.max_cable_current
