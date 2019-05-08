@@ -43,6 +43,8 @@ class ChargeControl(threading.Thread):
         self.evse_pwm_current=0
         self.pwm=0
         
+        gpio.setup(85, gpio.OUT)
+        
     def on_connect(self, client, userdata, flags, rc):
 
         if (rc == 0):
